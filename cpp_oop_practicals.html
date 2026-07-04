@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS-15 :: C++ &amp; OOP Practical Log — 100 Programs</title>
+<style>
+:root{
+  --bg: #0d1117;
+  --panel: #131a24;
+  --panel-2: #0f151d;
+  --line: #22303f;
+  --ink: #cfe3ee;
+  --ink-dim: #7f97a8;
+  --accent: #58c9b9;
+  --accent-2: #e3b23c;
+  --err: #e26d5c;
+  --term-bg: #05070a;
+  --term-ink: #a9f5c0;
+  --mono: 'JetBrains Mono','Fira Code',ui-monospace,'SFMono-Regular',Consolas,monospace;
+  --sans: 'Space Grotesk','Segoe UI',sans-serif;
+}
+[data-theme="light"]{
+  --bg: #f5f3ec;
+  --panel: #ffffff;
+  --panel-2: #f0eee5;
+  --line: #ddd8c8;
+  --ink: #2b2a25;
+  --ink-dim: #7a7568;
+  --accent: #0f8b7c;
+  --accent-2: #b8791f;
+  --err: #c0392b;
+  --term-bg: #1c1c1c;
+  --term-ink: #8ef0a8;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height:1.5;
+  transition: background .2s ease, color .2s ease;
+}
+header, .controls, .card, .count-pill, #search, #themeToggle, .jump button{
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 42px 42px;
+  opacity:0.05;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ===== Header ===== */
+header{
+  position:relative; z-index:1;
+  padding: 48px 6vw 28px;
+  border-bottom:1px solid var(--line);
+  background:
+    radial-gradient(1100px 320px at 12% -20%, rgba(88,201,185,0.16), transparent 60%),
+    var(--panel-2);
+}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:12.5px;
+  letter-spacing:0.14em;
+  color:var(--accent);
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.eyebrow::before{content:"●"; color:var(--accent-2); font-size:10px;}
+h1{
+  font-family:var(--sans);
+  font-weight:600;
+  font-size: clamp(28px, 4vw, 44px);
+  margin: 10px 0 8px;
+  letter-spacing:-0.01em;
+  color:#eef6f8;
+}
+h1 span{color:var(--accent);}
+.subtitle{
+  color:var(--ink-dim);
+  max-width:720px;
+  font-size:15px;
+}
+.meta-row{
+  margin-top:22px;
+  display:flex; gap:28px; flex-wrap:wrap;
+  font-family:var(--mono); font-size:12.5px; color:var(--ink-dim);
+}
+.meta-row b{color:var(--ink); font-weight:600;}
+
+/* ===== Controls (sticky) ===== */
+.controls{
+  position:sticky; top:0; z-index:5;
+  background: rgba(13,17,23,0.92);
+  backdrop-filter: blur(6px);
+  border-bottom:1px solid var(--line);
+  padding:14px 6vw;
+  display:flex; gap:14px; align-items:center; flex-wrap:wrap;
+}
+#search{
+  flex:1; min-width:220px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:var(--ink);
+  padding:10px 14px;
+  border-radius:6px;
+  font-family:var(--mono);
+  font-size:13.5px;
+  outline:none;
+}
+#search:focus{border-color:var(--accent);}
+#search::placeholder{color:var(--ink-dim);}
+.count-pill{
+  font-family:var(--mono); font-size:12.5px; color:var(--accent);
+  border:1px solid var(--line); padding:8px 12px; border-radius:6px; white-space:nowrap;
+}
+.jump{display:flex; gap:6px; flex-wrap:wrap;}
+.jump button{
+  background:transparent; border:1px solid var(--line); color:var(--ink-dim);
+  font-family:var(--mono); font-size:11.5px; padding:6px 9px; border-radius:5px;
+  cursor:pointer; transition:.15s;
+}
+.jump button:hover{border-color:var(--accent); color:var(--accent);}
+
+#themeToggle{
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:var(--ink);
+  font-family:var(--mono);
+  font-size:12.5px;
+  padding:9px 13px;
+  border-radius:6px;
+  cursor:pointer;
+  white-space:nowrap;
+  display:flex; align-items:center; gap:7px;
+  transition:.15s;
+}
+#themeToggle:hover{border-color:var(--accent); color:var(--accent);}
+
+.pane-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 18px 0;
+}
+.copy-btn{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--ink-dim);
+  background:transparent;
+  border:1px solid var(--line);
+  padding:4px 9px;
+  border-radius:5px;
+  cursor:pointer;
+  transition:.15s;
+}
+.copy-btn:hover{border-color:var(--accent); color:var(--accent);}
+.copy-btn.copied{border-color:var(--accent); color:var(--accent);}
+
+/* ===== Main list ===== */
+main{position:relative; z-index:1; padding: 30px 6vw 90px;}
+#program-count-hint{font-family:var(--mono); color:var(--ink-dim); font-size:12.5px; margin:0 0 18px;}
+
+.unit-label{
+  font-family:var(--mono);
+  color:var(--accent-2);
+  font-size:12px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin: 40px 0 14px;
+  padding-bottom:8px;
+  border-bottom:1px dashed var(--line);
+}
+.unit-label:first-of-type{margin-top:0;}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  margin-bottom:18px;
+  overflow:hidden;
+  scroll-margin-top:80px;
+}
+.card-head{
+  display:flex; align-items:center; gap:14px;
+  padding:15px 18px;
+  cursor:pointer;
+  user-select:none;
+}
+.num{
+  font-family:var(--mono);
+  font-weight:600;
+  font-size:13px;
+  color:var(--bg);
+  background:var(--accent);
+  min-width:38px; text-align:center;
+  padding:5px 0;
+  border-radius:5px;
+  flex-shrink:0;
+}
+.card-title{
+  flex:1;
+  font-size:15px;
+  color:#eaf4f6;
+  font-weight:500;
+}
+.chev{
+  font-family:var(--mono);
+  color:var(--ink-dim);
+  transition:transform .18s ease;
+  flex-shrink:0;
+}
+.card.open .chev{transform:rotate(90deg); color:var(--accent);}
+
+.card-body{
+  display:none;
+  border-top:1px solid var(--line);
+}
+.card.open .card-body{display:block;}
+
+.split{
+  display:grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  min-width:0;
+}
+@media (max-width: 900px){ .split{grid-template-columns:minmax(0,1fr);} }
+
+.pane{padding:0; min-width:0; overflow:hidden;}
+.pane-label{
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-dim); padding:12px 18px 0;
+}
+pre.code{
+  margin:8px 14px 16px;
+  padding:14px 16px;
+  background:var(--panel-2);
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow-x:auto;
+  max-width: calc(100% - 28px);
+  font-family:var(--mono);
+  font-size:12.8px;
+  line-height:1.6;
+  white-space:pre;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--panel-2);
+}
+.pane.output{border-left:1px solid var(--line);}
+@media (max-width: 900px){ .pane.output{border-left:none; border-top:1px solid var(--line);} }
+pre.term{
+  margin:8px 14px 16px;
+  padding:14px 16px;
+  background:var(--term-bg);
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow-x:auto;
+  max-width: calc(100% - 28px);
+  font-family:var(--mono);
+  font-size:12.8px;
+  line-height:1.6;
+  color:var(--term-ink);
+  white-space:pre;
+  word-break:normal;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--term-bg);
+}
+pre.code::-webkit-scrollbar, pre.term::-webkit-scrollbar{
+  height: 9px;
+}
+pre.code::-webkit-scrollbar-track{ background: var(--panel-2); }
+pre.term::-webkit-scrollbar-track{ background: var(--term-bg); }
+pre.code::-webkit-scrollbar-thumb, pre.term::-webkit-scrollbar-thumb{
+  background: var(--accent);
+  border-radius: 5px;
+}
+pre.term.err{color:var(--err);}
+.term-bar{
+  display:flex; gap:6px; padding:0 18px; margin-top:10px;
+}
+.term-bar span{width:9px;height:9px;border-radius:50%;display:inline-block;}
+.dot-r{background:#e2685c;} .dot-y{background:#e3b23c;} .dot-g{background:#5cc98a;}
+
+/* code token colors */
+.kw{color:#c792ea;}
+.type{color:#82aaff;}
+.str{color:#c3e88d;}
+.com{color:#546575; font-style:italic;}
+.num-lit{color:#f78c6c;}
+.pre{color:#89ddff;}
+.fn{color:#ffcb6b;}
+
+footer{
+  text-align:center;
+  padding:30px;
+  color:var(--ink-dim);
+  font-family:var(--mono);
+  font-size:11.5px;
+  border-top:1px solid var(--line);
+  position:relative; z-index:1;
+}
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">CS-15 · C++ &amp; Object Oriented Programming</div>
+  <h1>Practical Lab Log <span>/ 100 Programs</span></h1>
+  <p class="subtitle">Saurashtra University · B.C.A. Semester 3 curriculum. Every exercise from the CS-15 practical list, compiled with g++ (C++17) and run to produce the console output shown alongside each listing.</p>
+  <div class="meta-row">
+    <div><b>100</b> programs</div>
+    <div><b>g++ 13.3</b> / C++17</div>
+    <div>compiled &amp; verified — 0 errors</div>
+  </div>
+</header>
+
+<div class="controls">
+  <input id="search" type="text" placeholder="Filter by number or title… e.g. &quot;recursion&quot;, &quot;pointer&quot;, &quot;42&quot;">
+  <div class="jump" id="jumpRow"></div>
+  <div class="count-pill" id="countPill">100 / 100</div>
+  <button id="themeToggle" onclick="toggleTheme()"><span id="themeIcon">&#9789;</span><span id="themeLabel">Dark</span></button>
+</div>
+
+<main>
+  <p id="program-count-hint">Click any row to expand the source code and its verified output. Use the search bar to jump straight to a topic.</p>
+  <div id="list"></div>
+</main>
+
+<footer>Saurashtra University — B.C.A. (Honours) Semester 3 · CS-15 Practical Reference · generated study material</footer>
+
+<script id="prog-data" type="application/json">[{"num": 1, "title": "Print \"Hello, World!\" to the console", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    cout << \"Hello, World!\" << endl;\n    return 0;\n}", "output": "Hello, World!\n"}, {"num": 2, "title": "Take two integers as input and print their sum", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int a = 15, b = 27;\n    cout << \"First number: \" << a << endl;\n    cout << \"Second number: \" << b << endl;\n    cout << \"Sum = \" << a + b << endl;\n    return 0;\n}", "output": "First number: 15\nSecond number: 27\nSum = 42\n"}, {"num": 3, "title": "Swap two numbers using a temporary variable", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int a = 10, b = 20, temp;\n    cout << \"Before swap: a = \" << a << \", b = \" << b << endl;\n    temp = a;\n    a = b;\n    b = temp;\n    cout << \"After swap: a = \" << a << \", b = \" << b << endl;\n    return 0;\n}", "output": "Before swap: a = 10, b = 20\nAfter swap: a = 20, b = 10\n"}, {"num": 4, "title": "Find the maximum of two numbers using if-else", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int a = 45, b = 32;\n    if (a > b)\n        cout << \"Maximum is: \" << a << endl;\n    else\n        cout << \"Maximum is: \" << b << endl;\n    return 0;\n}", "output": "Maximum is: 45\n"}, {"num": 5, "title": "Check whether a number is even or odd", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 17;\n    if (n % 2 == 0)\n        cout << n << \" is Even\" << endl;\n    else\n        cout << n << \" is Odd\" << endl;\n    return 0;\n}", "output": "17 is Odd\n"}, {"num": 6, "title": "Create a simple calculator using switch-case", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    double a = 20, b = 4;\n    char op = '*';\n    double result;\n    switch (op) {\n        case '+': result = a + b; break;\n        case '-': result = a - b; break;\n        case '*': result = a * b; break;\n        case '/': result = a / b; break;\n        default: cout << \"Invalid operator\" << endl; return 0;\n    }\n    cout << a << \" \" << op << \" \" << b << \" = \" << result << endl;\n    return 0;\n}", "output": "20 * 4 = 80\n"}, {"num": 7, "title": "Check whether a given year is a leap year", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int year = 2024;\n    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))\n        cout << year << \" is a Leap Year\" << endl;\n    else\n        cout << year << \" is not a Leap Year\" << endl;\n    return 0;\n}", "output": "2024 is a Leap Year\n"}, {"num": 8, "title": "Print numbers from 1 to N using a loop", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 10;\n    for (int i = 1; i <= n; i++)\n        cout << i << \" \";\n    cout << endl;\n    return 0;\n}", "output": "1 2 3 4 5 6 7 8 9 10 \n"}, {"num": 9, "title": "Compute the factorial of a number using a loop", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 6;\n    unsigned long long fact = 1;\n    for (int i = 1; i <= n; i++)\n        fact *= i;\n    cout << \"Factorial of \" << n << \" = \" << fact << endl;\n    return 0;\n}", "output": "Factorial of 6 = 720\n"}, {"num": 10, "title": "Print the Fibonacci series up to N terms", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 10, a = 0, b = 1;\n    cout << \"Fibonacci Series: \";\n    for (int i = 0; i < n; i++) {\n        cout << a << \" \";\n        int next = a + b;\n        a = b;\n        b = next;\n    }\n    cout << endl;\n    return 0;\n}", "output": "Fibonacci Series: 0 1 1 2 3 5 8 13 21 34 \n"}, {"num": 11, "title": "Reverse the digits of a given number", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 12345, rev = 0;\n    while (n != 0) {\n        rev = rev * 10 + n % 10;\n        n /= 10;\n    }\n    cout << \"Reversed number: \" << rev << endl;\n    return 0;\n}", "output": "Reversed number: 54321\n"}, {"num": 12, "title": "Check whether a number is prime or not", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 29;\n    bool isPrime = (n > 1);\n    for (int i = 2; i * i <= n; i++) {\n        if (n % i == 0) { isPrime = false; break; }\n    }\n    cout << n << (isPrime ? \" is Prime\" : \" is not Prime\") << endl;\n    return 0;\n}", "output": "29 is Prime\n"}, {"num": 13, "title": "Print the multiplication table of a number", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 7;\n    for (int i = 1; i <= 10; i++)\n        cout << n << \" x \" << i << \" = \" << n * i << endl;\n    return 0;\n}", "output": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n7 x 10 = 70\n"}, {"num": 14, "title": "Compute the sum of digits of a number", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 4938, sum = 0;\n    while (n != 0) {\n        sum += n % 10;\n        n /= 10;\n    }\n    cout << \"Sum of digits = \" << sum << endl;\n    return 0;\n}", "output": "Sum of digits = 24\n"}, {"num": 15, "title": "Check whether a number or string is a palindrome", "code": "#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s = \"madam\";\n    string rev(s.rbegin(), s.rend());\n    if (s == rev)\n        cout << s << \" is a Palindrome\" << endl;\n    else\n        cout << s << \" is not a Palindrome\" << endl;\n    return 0;\n}", "output": "madam is a Palindrome\n"}, {"num": 16, "title": "Check whether a number is an Armstrong number", "code": "#include <iostream>\n#include <cmath>\nusing namespace std;\nint main() {\n    int n = 153, temp = n, sum = 0;\n    int digits = to_string(n).length();\n    while (temp != 0) {\n        int d = temp % 10;\n        sum += pow(d, digits);\n        temp /= 10;\n    }\n    cout << n << (sum == n ? \" is an Armstrong number\" : \" is not an Armstrong number\") << endl;\n    return 0;\n}", "output": "153 is an Armstrong number\n"}, {"num": 17, "title": "Convert a binary number to a decimal number", "code": "#include <iostream>\n#include <cmath>\nusing namespace std;\nint main() {\n    long long binary = 110101;\n    long long decimal = 0;\n    int base = 1;\n    while (binary > 0) {\n        int last = binary % 10;\n        decimal += last * base;\n        base *= 2;\n        binary /= 10;\n    }\n    cout << \"Decimal value = \" << decimal << endl;\n    return 0;\n}", "output": "Decimal value = 53\n"}, {"num": 18, "title": "Convert a decimal number to binary", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 53;\n    string binary = \"\";\n    int temp = n;\n    if (temp == 0) binary = \"0\";\n    while (temp > 0) {\n        binary = char('0' + temp % 2) + binary;\n        temp /= 2;\n    }\n    cout << n << \" in binary = \" << binary << endl;\n    return 0;\n}", "output": "53 in binary = 110101\n"}, {"num": 19, "title": "Count the number of digits in an integer", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 90342, count = 0;\n    if (n == 0) count = 1;\n    while (n != 0) {\n        n /= 10;\n        count++;\n    }\n    cout << \"Number of digits = \" << count << endl;\n    return 0;\n}", "output": "Number of digits = 5\n"}, {"num": 20, "title": "Compute the power of a number using a loop", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int base = 3, exp = 5;\n    long long result = 1;\n    for (int i = 0; i < exp; i++)\n        result *= base;\n    cout << base << \"^\" << exp << \" = \" << result << endl;\n    return 0;\n}", "output": "3^5 = 243\n"}, {"num": 21, "title": "Perform linear search in an array", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int arr[] = {12, 45, 3, 67, 29, 8};\n    int n = 6, key = 67;\n    int pos = -1;\n    for (int i = 0; i < n; i++) {\n        if (arr[i] == key) { pos = i; break; }\n    }\n    if (pos != -1)\n        cout << \"Element found at index \" << pos << endl;\n    else\n        cout << \"Element not found\" << endl;\n    return 0;\n}", "output": "Element found at index 3\n"}, {"num": 22, "title": "Perform binary search in a sorted array", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int arr[] = {3, 8, 12, 29, 45, 67};\n    int n = 6, key = 29;\n    int low = 0, high = n - 1, pos = -1;\n    while (low <= high) {\n        int mid = (low + high) / 2;\n        if (arr[mid] == key) { pos = mid; break; }\n        else if (arr[mid] < key) low = mid + 1;\n        else high = mid - 1;\n    }\n    if (pos != -1)\n        cout << \"Element found at index \" << pos << endl;\n    else\n        cout << \"Element not found\" << endl;\n    return 0;\n}", "output": "Element found at index 3\n"}, {"num": 23, "title": "Find the maximum element in an array", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int arr[] = {23, 67, 12, 89, 45};\n    int n = 5, maxVal = arr[0];\n    for (int i = 1; i < n; i++)\n        if (arr[i] > maxVal) maxVal = arr[i];\n    cout << \"Maximum element = \" << maxVal << endl;\n    return 0;\n}", "output": "Maximum element = 89\n"}, {"num": 24, "title": "Find the sum of elements in an array", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int arr[] = {10, 20, 30, 40, 50};\n    int n = 5, sum = 0;\n    for (int i = 0; i < n; i++)\n        sum += arr[i];\n    cout << \"Sum of elements = \" << sum << endl;\n    return 0;\n}", "output": "Sum of elements = 150\n"}, {"num": 25, "title": "Reverse an array in-place", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int arr[] = {1, 2, 3, 4, 5};\n    int n = 5;\n    for (int i = 0; i < n / 2; i++)\n        swap(arr[i], arr[n - 1 - i]);\n    cout << \"Reversed array: \";\n    for (int i = 0; i < n; i++) cout << arr[i] << \" \";\n    cout << endl;\n    return 0;\n}", "output": "Reversed array: 5 4 3 2 1 \n"}, {"num": 26, "title": "Count the frequency of each element in an array", "code": "#include <iostream>\n#include <map>\nusing namespace std;\nint main() {\n    int arr[] = {1, 2, 2, 3, 1, 4, 2};\n    int n = 7;\n    map<int,int> freq;\n    for (int i = 0; i < n; i++) freq[arr[i]]++;\n    for (auto& p : freq)\n        cout << p.first << \" occurs \" << p.second << \" time(s)\" << endl;\n    return 0;\n}", "output": "1 occurs 2 time(s)\n2 occurs 3 time(s)\n3 occurs 1 time(s)\n4 occurs 1 time(s)\n"}, {"num": 27, "title": "Sort an array using bubble sort", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int arr[] = {64, 34, 25, 12, 22, 11, 90};\n    int n = 7;\n    for (int i = 0; i < n - 1; i++)\n        for (int j = 0; j < n - i - 1; j++)\n            if (arr[j] > arr[j + 1]) swap(arr[j], arr[j + 1]);\n    cout << \"Sorted array: \";\n    for (int i = 0; i < n; i++) cout << arr[i] << \" \";\n    cout << endl;\n    return 0;\n}", "output": "Sorted array: 11 12 22 25 34 64 90 \n"}, {"num": 28, "title": "Merge and sort two arrays", "code": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nint main() {\n    int a[] = {5, 1, 9}, b[] = {4, 8, 2};\n    int merged[6];\n    for (int i = 0; i < 3; i++) merged[i] = a[i];\n    for (int i = 0; i < 3; i++) merged[3 + i] = b[i];\n    sort(merged, merged + 6);\n    cout << \"Merged & sorted array: \";\n    for (int i = 0; i < 6; i++) cout << merged[i] << \" \";\n    cout << endl;\n    return 0;\n}", "output": "Merged & sorted array: 1 2 4 5 8 9 \n"}, {"num": 29, "title": "Find duplicate elements in an array", "code": "#include <iostream>\n#include <map>\nusing namespace std;\nint main() {\n    int arr[] = {4, 2, 7, 4, 9, 2, 5};\n    int n = 7;\n    map<int,int> freq;\n    for (int i = 0; i < n; i++) freq[arr[i]]++;\n    cout << \"Duplicate elements: \";\n    for (auto& p : freq)\n        if (p.second > 1) cout << p.first << \" \";\n    cout << endl;\n    return 0;\n}", "output": "Duplicate elements: 2 4 \n"}, {"num": 30, "title": "Find the length of a string without using inbuilt functions", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    char str[] = \"Saurashtra\";\n    int len = 0;\n    while (str[len] != '\\0') len++;\n    cout << \"Length of string = \" << len << endl;\n    return 0;\n}", "output": "Length of string = 10\n"}, {"num": 31, "title": "Compute factorial using recursion", "code": "#include <iostream>\nusing namespace std;\nunsigned long long factorial(int n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}\nint main() {\n    int n = 7;\n    cout << \"Factorial of \" << n << \" = \" << factorial(n) << endl;\n    return 0;\n}", "output": "Factorial of 7 = 5040\n"}, {"num": 32, "title": "Print Fibonacci series using recursion", "code": "#include <iostream>\nusing namespace std;\nint fib(int n) {\n    if (n <= 1) return n;\n    return fib(n - 1) + fib(n - 2);\n}\nint main() {\n    int n = 10;\n    cout << \"Fibonacci Series: \";\n    for (int i = 0; i < n; i++) cout << fib(i) << \" \";\n    cout << endl;\n    return 0;\n}", "output": "Fibonacci Series: 0 1 1 2 3 5 8 13 21 34 \n"}, {"num": 33, "title": "Compute GCD of two numbers using recursion", "code": "#include <iostream>\nusing namespace std;\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\nint main() {\n    int a = 48, b = 18;\n    cout << \"GCD of \" << a << \" and \" << b << \" = \" << gcd(a, b) << endl;\n    return 0;\n}", "output": "GCD of 48 and 18 = 6\n"}, {"num": 34, "title": "Compute LCM of two numbers", "code": "#include <iostream>\nusing namespace std;\nint gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }\nint main() {\n    int a = 12, b = 18;\n    int lcm = (a * b) / gcd(a, b);\n    cout << \"LCM of \" << a << \" and \" << b << \" = \" << lcm << endl;\n    return 0;\n}", "output": "LCM of 12 and 18 = 36\n"}, {"num": 35, "title": "Find the sum of numbers from 1 to N using recursion", "code": "#include <iostream>\nusing namespace std;\nint sumN(int n) {\n    if (n == 0) return 0;\n    return n + sumN(n - 1);\n}\nint main() {\n    int n = 10;\n    cout << \"Sum from 1 to \" << n << \" = \" << sumN(n) << endl;\n    return 0;\n}", "output": "Sum from 1 to 10 = 55\n"}, {"num": 36, "title": "Check if a number is prime using recursion", "code": "#include <iostream>\nusing namespace std;\nbool isPrimeUtil(int n, int i) {\n    if (i * i > n) return true;\n    if (n % i == 0) return false;\n    return isPrimeUtil(n, i + 1);\n}\nbool isPrime(int n) {\n    if (n < 2) return false;\n    return isPrimeUtil(n, 2);\n}\nint main() {\n    int n = 37;\n    cout << n << (isPrime(n) ? \" is Prime\" : \" is not Prime\") << endl;\n    return 0;\n}", "output": "37 is Prime\n"}, {"num": 37, "title": "Solve the Tower of Hanoi problem", "code": "#include <iostream>\nusing namespace std;\nvoid hanoi(int n, char from, char aux, char to) {\n    if (n == 0) return;\n    hanoi(n - 1, from, to, aux);\n    cout << \"Move disk \" << n << \" from \" << from << \" to \" << to << endl;\n    hanoi(n - 1, aux, from, to);\n}\nint main() {\n    int n = 3;\n    hanoi(n, 'A', 'B', 'C');\n    return 0;\n}", "output": "Move disk 1 from A to C\nMove disk 2 from A to B\nMove disk 1 from C to B\nMove disk 3 from A to C\nMove disk 1 from B to A\nMove disk 2 from B to C\nMove disk 1 from A to C\n"}, {"num": 38, "title": "Check if a string is a palindrome using recursion", "code": "#include <iostream>\n#include <string>\nusing namespace std;\nbool isPalin(string s, int start, int end) {\n    if (start >= end) return true;\n    if (s[start] != s[end]) return false;\n    return isPalin(s, start + 1, end - 1);\n}\nint main() {\n    string s = \"malayalam\";\n    cout << s << (isPalin(s, 0, s.length() - 1) ? \" is a Palindrome\" : \" is not a Palindrome\") << endl;\n    return 0;\n}", "output": "malayalam is a Palindrome\n"}, {"num": 39, "title": "Implement a power function using recursion", "code": "#include <iostream>\nusing namespace std;\nlong long power(int base, int exp) {\n    if (exp == 0) return 1;\n    return base * power(base, exp - 1);\n}\nint main() {\n    int base = 2, exp = 10;\n    cout << base << \"^\" << exp << \" = \" << power(base, exp) << endl;\n    return 0;\n}", "output": "2^10 = 1024\n"}, {"num": 40, "title": "Swap two numbers using pointers and functions", "code": "#include <iostream>\nusing namespace std;\nvoid swapNums(int* a, int* b) {\n    int temp = *a;\n    *a = *b;\n    *b = temp;\n}\nint main() {\n    int x = 5, y = 10;\n    cout << \"Before swap: x = \" << x << \", y = \" << y << endl;\n    swapNums(&x, &y);\n    cout << \"After swap: x = \" << x << \", y = \" << y << endl;\n    return 0;\n}", "output": "Before swap: x = 5, y = 10\nAfter swap: x = 10, y = 5\n"}, {"num": 41, "title": "Demonstrate the use of pointers", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int num = 100;\n    int* ptr = &num;\n    cout << \"Value of num: \" << num << endl;\n    cout << \"Address of num: \" << &num << endl;\n    cout << \"Value via pointer: \" << *ptr << endl;\n    return 0;\n}", "output": "Value of num: 100\nAddress of num: 0x7fff4777eacc\nValue via pointer: 100\n"}, {"num": 42, "title": "Swap two variables using pointers", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int a = 3, b = 9;\n    int *pa = &a, *pb = &b, temp;\n    temp = *pa;\n    *pa = *pb;\n    *pb = temp;\n    cout << \"a = \" << a << \", b = \" << b << endl;\n    return 0;\n}", "output": "a = 9, b = 3\n"}, {"num": 43, "title": "Access array elements using pointers", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int arr[] = {10, 20, 30, 40, 50};\n    int* ptr = arr;\n    for (int i = 0; i < 5; i++)\n        cout << \"Element \" << i << \" = \" << *(ptr + i) << endl;\n    return 0;\n}", "output": "Element 0 = 10\nElement 1 = 20\nElement 2 = 30\nElement 3 = 40\nElement 4 = 50\n"}, {"num": 44, "title": "Create and use a dynamic array", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n = 5;\n    int* arr = new int[n];\n    for (int i = 0; i < n; i++) arr[i] = (i + 1) * 10;\n    cout << \"Dynamic array: \";\n    for (int i = 0; i < n; i++) cout << arr[i] << \" \";\n    cout << endl;\n    delete[] arr;\n    return 0;\n}", "output": "Dynamic array: 10 20 30 40 50 \n"}, {"num": 45, "title": "Demonstrate pointer to pointer (double pointer)", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int num = 42;\n    int* ptr = &num;\n    int** pptr = &ptr;\n    cout << \"Value of num: \" << num << endl;\n    cout << \"Value via ptr: \" << *ptr << endl;\n    cout << \"Value via pptr: \" << **pptr << endl;\n    return 0;\n}", "output": "Value of num: 42\nValue via ptr: 42\nValue via pptr: 42\n"}, {"num": 46, "title": "Return a pointer from a function", "code": "#include <iostream>\nusing namespace std;\nint* getPointer(int* arr, int index) {\n    return &arr[index];\n}\nint main() {\n    int arr[] = {5, 15, 25, 35};\n    int* p = getPointer(arr, 2);\n    cout << \"Value at index 2 = \" << *p << endl;\n    return 0;\n}", "output": "Value at index 2 = 25\n"}, {"num": 47, "title": "Demonstrate pointer arithmetic", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int arr[] = {1, 2, 3, 4, 5};\n    int* ptr = arr;\n    cout << \"*ptr = \" << *ptr << endl;\n    ptr++;\n    cout << \"After ptr++, *ptr = \" << *ptr << endl;\n    ptr += 2;\n    cout << \"After ptr+=2, *ptr = \" << *ptr << endl;\n    return 0;\n}", "output": "*ptr = 1\nAfter ptr++, *ptr = 2\nAfter ptr+=2, *ptr = 4\n"}, {"num": 48, "title": "Demonstrate a dangling pointer issue", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int* ptr = new int(25);\n    cout << \"Value before delete: \" << *ptr << endl;\n    delete ptr;\n    ptr = nullptr; // avoiding real dangling access, good practice shown\n    if (ptr == nullptr)\n        cout << \"Pointer set to nullptr after delete to avoid dangling pointer issue\" << endl;\n    return 0;\n}", "output": "Value before delete: 25\nPointer set to nullptr after delete to avoid dangling pointer issue\n"}, {"num": 49, "title": "Define a class and create objects", "code": "#include <iostream>\nusing namespace std;\nclass Student {\npublic:\n    string name;\n    int age;\n};\nint main() {\n    Student s1;\n    s1.name = \"Riya\";\n    s1.age = 20;\n    cout << \"Name: \" << s1.name << \", Age: \" << s1.age << endl;\n    return 0;\n}", "output": "Name: Riya, Age: 20\n"}, {"num": 50, "title": "Demonstrate the use of constructors and destructors", "code": "#include <iostream>\nusing namespace std;\nclass Demo {\npublic:\n    Demo() { cout << \"Constructor called\" << endl; }\n    ~Demo() { cout << \"Destructor called\" << endl; }\n};\nint main() {\n    Demo d;\n    cout << \"Inside main\" << endl;\n    return 0;\n}", "output": "Constructor called\nInside main\nDestructor called\n"}, {"num": 51, "title": "Define a constructor with default values", "code": "#include <iostream>\nusing namespace std;\nclass Box {\npublic:\n    int length, width;\n    Box(int l = 5, int w = 3) : length(l), width(w) {}\n    void display() { cout << \"Length: \" << length << \", Width: \" << width << endl; }\n};\nint main() {\n    Box b1;\n    Box b2(10, 8);\n    b1.display();\n    b2.display();\n    return 0;\n}", "output": "Length: 5, Width: 3\nLength: 10, Width: 8\n"}, {"num": 52, "title": "Implement a copy constructor", "code": "#include <iostream>\nusing namespace std;\nclass Point {\npublic:\n    int x, y;\n    Point(int a, int b) : x(a), y(b) {}\n    Point(const Point& p) { x = p.x; y = p.y; cout << \"Copy constructor called\" << endl; }\n    void display() { cout << \"(\" << x << \", \" << y << \")\" << endl; }\n};\nint main() {\n    Point p1(3, 4);\n    Point p2 = p1;\n    p2.display();\n    return 0;\n}", "output": "Copy constructor called\n(3, 4)\n"}, {"num": 53, "title": "Overload the + operator for a class", "code": "#include <iostream>\nusing namespace std;\nclass Complex {\npublic:\n    int real, imag;\n    Complex(int r = 0, int i = 0) : real(r), imag(i) {}\n    Complex operator+(const Complex& c) {\n        return Complex(real + c.real, imag + c.imag);\n    }\n    void display() { cout << real << \" + \" << imag << \"i\" << endl; }\n};\nint main() {\n    Complex c1(3, 4), c2(1, 2);\n    Complex c3 = c1 + c2;\n    c3.display();\n    return 0;\n}", "output": "4 + 6i\n"}, {"num": 54, "title": "Demonstrate function overloading", "code": "#include <iostream>\nusing namespace std;\nint add(int a, int b) { return a + b; }\ndouble add(double a, double b) { return a + b; }\nint add(int a, int b, int c) { return a + b + c; }\nint main() {\n    cout << add(2, 3) << endl;\n    cout << add(2.5, 3.5) << endl;\n    cout << add(1, 2, 3) << endl;\n    return 0;\n}", "output": "5\n6\n6\n"}, {"num": 55, "title": "Use static variables and functions in a class", "code": "#include <iostream>\nusing namespace std;\nclass Counter {\npublic:\n    static int count;\n    Counter() { count++; }\n    static void showCount() { cout << \"Count = \" << count << endl; }\n};\nint Counter::count = 0;\nint main() {\n    Counter c1, c2, c3;\n    Counter::showCount();\n    return 0;\n}", "output": "Count = 3\n"}, {"num": 56, "title": "Access private members using a friend function", "code": "#include <iostream>\nusing namespace std;\nclass Box {\nprivate:\n    int width;\npublic:\n    Box(int w) : width(w) {}\n    friend void printWidth(Box b);\n};\nvoid printWidth(Box b) {\n    cout << \"Width = \" << b.width << endl;\n}\nint main() {\n    Box b(15);\n    printWidth(b);\n    return 0;\n}", "output": "Width = 15\n"}, {"num": 57, "title": "Implement single inheritance", "code": "#include <iostream>\nusing namespace std;\nclass Animal {\npublic:\n    void eat() { cout << \"This animal eats food\" << endl; }\n};\nclass Dog : public Animal {\npublic:\n    void bark() { cout << \"The dog barks\" << endl; }\n};\nint main() {\n    Dog d;\n    d.eat();\n    d.bark();\n    return 0;\n}", "output": "This animal eats food\nThe dog barks\n"}, {"num": 58, "title": "Implement multilevel inheritance", "code": "#include <iostream>\nusing namespace std;\nclass Animal {\npublic:\n    void eat() { cout << \"Animal eats\" << endl; }\n};\nclass Mammal : public Animal {\npublic:\n    void walk() { cout << \"Mammal walks\" << endl; }\n};\nclass Dog : public Mammal {\npublic:\n    void bark() { cout << \"Dog barks\" << endl; }\n};\nint main() {\n    Dog d;\n    d.eat();\n    d.walk();\n    d.bark();\n    return 0;\n}", "output": "Animal eats\nMammal walks\nDog barks\n"}, {"num": 59, "title": "Implement multiple inheritance", "code": "#include <iostream>\nusing namespace std;\nclass Father {\npublic:\n    void skillFather() { cout << \"Father: Good at Business\" << endl; }\n};\nclass Mother {\npublic:\n    void skillMother() { cout << \"Mother: Good at Music\" << endl; }\n};\nclass Child : public Father, public Mother {\npublic:\n    void skillChild() { cout << \"Child: Good at Sports\" << endl; }\n};\nint main() {\n    Child c;\n    c.skillFather();\n    c.skillMother();\n    c.skillChild();\n    return 0;\n}", "output": "Father: Good at Business\nMother: Good at Music\nChild: Good at Sports\n"}, {"num": 60, "title": "Use virtual functions for runtime polymorphism", "code": "#include <iostream>\nusing namespace std;\nclass Shape {\npublic:\n    virtual void draw() { cout << \"Drawing a shape\" << endl; }\n};\nclass Circle : public Shape {\npublic:\n    void draw() override { cout << \"Drawing a circle\" << endl; }\n};\nint main() {\n    Shape* s = new Circle();\n    s->draw();\n    delete s;\n    return 0;\n}", "output": "Drawing a circle\n"}, {"num": 61, "title": "Implement an abstract class using pure virtual functions", "code": "#include <iostream>\nusing namespace std;\nclass Shape {\npublic:\n    virtual void area() = 0;\n};\nclass Rectangle : public Shape {\npublic:\n    void area() override { cout << \"Area of rectangle = \" << 10 * 5 << endl; }\n};\nint main() {\n    Shape* s = new Rectangle();\n    s->area();\n    delete s;\n    return 0;\n}", "output": "Area of rectangle = 50\n"}, {"num": 62, "title": "Override a base class function in a derived class", "code": "#include <iostream>\nusing namespace std;\nclass Base {\npublic:\n    void show() { cout << \"Base class show()\" << endl; }\n};\nclass Derived : public Base {\npublic:\n    void show() { cout << \"Derived class show()\" << endl; }\n};\nint main() {\n    Derived d;\n    d.show();\n    d.Base::show();\n    return 0;\n}", "output": "Derived class show()\nBase class show()\n"}, {"num": 63, "title": "Demonstrate the use of virtual destructor", "code": "#include <iostream>\nusing namespace std;\nclass Base {\npublic:\n    virtual ~Base() { cout << \"Base destructor called\" << endl; }\n};\nclass Derived : public Base {\npublic:\n    ~Derived() { cout << \"Derived destructor called\" << endl; }\n};\nint main() {\n    Base* b = new Derived();\n    delete b;\n    return 0;\n}", "output": "Derived destructor called\nBase destructor called\n"}, {"num": 64, "title": "Use function templates", "code": "#include <iostream>\nusing namespace std;\ntemplate <typename T>\nT maxVal(T a, T b) {\n    return (a > b) ? a : b;\n}\nint main() {\n    cout << \"Max of 5, 9 = \" << maxVal(5, 9) << endl;\n    cout << \"Max of 3.5, 2.1 = \" << maxVal(3.5, 2.1) << endl;\n    return 0;\n}", "output": "Max of 5, 9 = 9\nMax of 3.5, 2.1 = 3.5\n"}, {"num": 65, "title": "Create a class template", "code": "#include <iostream>\nusing namespace std;\ntemplate <class T>\nclass Pair {\npublic:\n    T a, b;\n    Pair(T x, T y) : a(x), b(y) {}\n    T getMax() { return (a > b) ? a : b; }\n};\nint main() {\n    Pair<int> p1(10, 25);\n    cout << \"Max = \" << p1.getMax() << endl;\n    return 0;\n}", "output": "Max = 25\n"}, {"num": 66, "title": "Specialize a template for a specific data type", "code": "#include <iostream>\nusing namespace std;\ntemplate <typename T>\nclass Printer {\npublic:\n    void print(T val) { cout << \"Value: \" << val << endl; }\n};\ntemplate <>\nclass Printer<char> {\npublic:\n    void print(char val) { cout << \"Character Value: '\" << val << \"'\" << endl; }\n};\nint main() {\n    Printer<int> p1;\n    p1.print(100);\n    Printer<char> p2;\n    p2.print('A');\n    return 0;\n}", "output": "Value: 100\nCharacter Value: 'A'\n"}, {"num": 67, "title": "Handle exceptions using try, catch, and throw", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int a = 10, b = 0;\n    try {\n        if (b == 0) throw runtime_error(\"Division by zero!\");\n        cout << a / b << endl;\n    } catch (runtime_error& e) {\n        cout << \"Exception caught: \" << e.what() << endl;\n    }\n    return 0;\n}", "output": "Exception caught: Division by zero!\n"}, {"num": 68, "title": "Define and throw a custom exception class", "code": "#include <iostream>\n#include <exception>\nusing namespace std;\nclass NegativeValueException : public exception {\npublic:\n    const char* what() const noexcept override {\n        return \"Negative value not allowed!\";\n    }\n};\nint main() {\n    int val = -5;\n    try {\n        if (val < 0) throw NegativeValueException();\n        cout << \"Value = \" << val << endl;\n    } catch (NegativeValueException& e) {\n        cout << \"Exception caught: \" << e.what() << endl;\n    }\n    return 0;\n}", "output": "Exception caught: Negative value not allowed!\n"}, {"num": 69, "title": "Write text to a file", "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream fout(\"data.txt\");\n    fout << \"Hello from C++ File Handling!\" << endl;\n    fout << \"Saurashtra University BCA Semester 3\" << endl;\n    fout.close();\n    cout << \"Data written to file successfully.\" << endl;\n    return 0;\n}", "output": "Data written to file successfully.\n"}, {"num": 70, "title": "Read text from a file", "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream fout(\"data.txt\");\n    fout << \"Hello from C++ File Handling!\\n\";\n    fout.close();\n    ifstream fin(\"data.txt\");\n    string line;\n    while (getline(fin, line))\n        cout << line << endl;\n    fin.close();\n    return 0;\n}", "output": "Hello from C++ File Handling!\n"}, {"num": 71, "title": "Copy contents from one file to another", "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream src(\"source.txt\");\n    src << \"This content will be copied to destination file.\";\n    src.close();\n    ifstream in(\"source.txt\");\n    ofstream out(\"destination.txt\");\n    out << in.rdbuf();\n    in.close();\n    out.close();\n    ifstream check(\"destination.txt\");\n    string line;\n    cout << \"Destination file content: \" << endl;\n    while (getline(check, line)) cout << line << endl;\n    return 0;\n}", "output": "Destination file content: \nThis content will be copied to destination file.\n"}, {"num": 72, "title": "Count the number of words in a file", "code": "#include <iostream>\n#include <fstream>\n#include <sstream>\nusing namespace std;\nint main() {\n    ofstream fout(\"words.txt\");\n    fout << \"This is a sample text file for counting words\";\n    fout.close();\n    ifstream fin(\"words.txt\");\n    stringstream buffer;\n    buffer << fin.rdbuf();\n    string word;\n    int count = 0;\n    while (buffer >> word) count++;\n    cout << \"Number of words = \" << count << endl;\n    return 0;\n}", "output": "Number of words = 9\n"}, {"num": 73, "title": "Read a file line by line", "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream fout(\"lines.txt\");\n    fout << \"Line 1: Introduction\\nLine 2: OOP Concepts\\nLine 3: Conclusion\\n\";\n    fout.close();\n    ifstream fin(\"lines.txt\");\n    string line;\n    int num = 1;\n    while (getline(fin, line)) {\n        cout << num++ << \": \" << line << endl;\n    }\n    return 0;\n}", "output": "1: Line 1: Introduction\n2: Line 2: OOP Concepts\n3: Line 3: Conclusion\n"}, {"num": 74, "title": "Append content to a file", "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ofstream fout(\"append.txt\");\n    fout << \"First line of the file.\\n\";\n    fout.close();\n    ofstream fapp(\"append.txt\", ios::app);\n    fapp << \"This line is appended.\\n\";\n    fapp.close();\n    ifstream fin(\"append.txt\");\n    string line;\n    while (getline(fin, line)) cout << line << endl;\n    return 0;\n}", "output": "First line of the file.\nThis line is appended.\n"}, {"num": 75, "title": "Write and read binary data using a file", "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\nstruct Record { int id; double marks; };\nint main() {\n    Record r1 = {101, 87.5};\n    ofstream fout(\"record.dat\", ios::binary);\n    fout.write((char*)&r1, sizeof(r1));\n    fout.close();\n    Record r2;\n    ifstream fin(\"record.dat\", ios::binary);\n    fin.read((char*)&r2, sizeof(r2));\n    cout << \"ID: \" << r2.id << \", Marks: \" << r2.marks << endl;\n    return 0;\n}", "output": "ID: 101, Marks: 87.5\n"}, {"num": 76, "title": "Check if a file exists before opening", "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\nint main() {\n    ifstream fin(\"nonexistent.txt\");\n    if (!fin) {\n        cout << \"File does not exist!\" << endl;\n    } else {\n        cout << \"File exists.\" << endl;\n        fin.close();\n    }\n    return 0;\n}", "output": "File does not exist!\n"}, {"num": 77, "title": "Read a CSV file and process its data", "code": "#include <iostream>\n#include <fstream>\n#include <sstream>\nusing namespace std;\nint main() {\n    ofstream fout(\"data.csv\");\n    fout << \"Name,Marks\\nAmit,85\\nNeha,92\\n\";\n    fout.close();\n    ifstream fin(\"data.csv\");\n    string line;\n    while (getline(fin, line)) {\n        stringstream ss(line);\n        string name, marks;\n        getline(ss, name, ',');\n        getline(ss, marks, ',');\n        cout << \"Name: \" << name << \" | Marks: \" << marks << endl;\n    }\n    return 0;\n}", "output": "Name: Name | Marks: Marks\nName: Amit | Marks: 85\nName: Neha | Marks: 92\n"}, {"num": 78, "title": "Manage student records using file operations", "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\nstruct Student { int roll; char name[20]; float marks; };\nint main() {\n    Student s1 = {1, \"Kavya\", 91.5};\n    ofstream fout(\"students.dat\", ios::binary);\n    fout.write((char*)&s1, sizeof(s1));\n    fout.close();\n    Student s2;\n    ifstream fin(\"students.dat\", ios::binary);\n    fin.read((char*)&s2, sizeof(s2));\n    cout << \"Roll: \" << s2.roll << \", Name: \" << s2.name << \", Marks: \" << s2.marks << endl;\n    return 0;\n}", "output": "Roll: 1, Name: Kavya, Marks: 91.5\n"}, {"num": 79, "title": "Use a parameterized constructor to initialize class data", "code": "#include <iostream>\nusing namespace std;\nclass Employee {\npublic:\n    string name;\n    double salary;\n    Employee(string n, double s) : name(n), salary(s) {}\n    void display() { cout << name << \" earns \" << salary << endl; }\n};\nint main() {\n    Employee e(\"Suresh\", 45000);\n    e.display();\n    return 0;\n}", "output": "Suresh earns 45000\n"}, {"num": 80, "title": "Overload constructors in a class", "code": "#include <iostream>\nusing namespace std;\nclass Rectangle {\npublic:\n    int length, width;\n    Rectangle() : length(1), width(1) {}\n    Rectangle(int side) : length(side), width(side) {}\n    Rectangle(int l, int w) : length(l), width(w) {}\n    void display() { cout << \"L=\" << length << \" W=\" << width << \" Area=\" << length * width << endl; }\n};\nint main() {\n    Rectangle r1, r2(4), r3(6, 3);\n    r1.display();\n    r2.display();\n    r3.display();\n    return 0;\n}", "output": "L=1 W=1 Area=1\nL=4 W=4 Area=16\nL=6 W=3 Area=18\n"}, {"num": 81, "title": "Create a constructor that initializes data using member initializer list", "code": "#include <iostream>\nusing namespace std;\nclass Point {\npublic:\n    const int x, y;\n    Point(int a, int b) : x(a), y(b) {}\n    void display() { cout << \"(\" << x << \", \" << y << \")\" << endl; }\n};\nint main() {\n    Point p(7, 9);\n    p.display();\n    return 0;\n}", "output": "(7, 9)\n"}, {"num": 82, "title": "Demonstrate constructor overloading in a class with default arguments", "code": "#include <iostream>\nusing namespace std;\nclass Box {\npublic:\n    int length, width, height;\n    Box(int l = 1, int w = 1, int h = 1) : length(l), width(w), height(h) {}\n    void volume() { cout << \"Volume = \" << length * width * height << endl; }\n};\nint main() {\n    Box b1;\n    Box b2(2, 3);\n    Box b3(2, 3, 4);\n    b1.volume();\n    b2.volume();\n    b3.volume();\n    return 0;\n}", "output": "Volume = 1\nVolume = 6\nVolume = 24\n"}, {"num": 83, "title": "Implement a class with a private constructor and a static method (Singleton pattern)", "code": "#include <iostream>\nusing namespace std;\nclass Singleton {\nprivate:\n    static Singleton* instance;\n    Singleton() { cout << \"Singleton instance created\" << endl; }\npublic:\n    static Singleton* getInstance() {\n        if (!instance) instance = new Singleton();\n        return instance;\n    }\n    void show() { cout << \"Using the single instance\" << endl; }\n};\nSingleton* Singleton::instance = nullptr;\nint main() {\n    Singleton* s1 = Singleton::getInstance();\n    s1->show();\n    Singleton* s2 = Singleton::getInstance();\n    cout << \"Same instance? \" << (s1 == s2 ? \"Yes\" : \"No\") << endl;\n    return 0;\n}", "output": "Singleton instance created\nUsing the single instance\nSame instance? Yes\n"}, {"num": 84, "title": "Initialize an object using a copy constructor", "code": "#include <iostream>\nusing namespace std;\nclass Book {\npublic:\n    string title;\n    Book(string t) : title(t) {}\n    Book(const Book& b) { title = b.title; }\n    void display() { cout << \"Book: \" << title << endl; }\n};\nint main() {\n    Book b1(\"C++ Programming\");\n    Book b2(b1);\n    b2.display();\n    return 0;\n}", "output": "Book: C++ Programming\n"}, {"num": 85, "title": "Show constructor call order in inheritance", "code": "#include <iostream>\nusing namespace std;\nclass Base {\npublic:\n    Base() { cout << \"Base constructor called\" << endl; }\n};\nclass Derived : public Base {\npublic:\n    Derived() { cout << \"Derived constructor called\" << endl; }\n};\nint main() {\n    Derived d;\n    return 0;\n}", "output": "Base constructor called\nDerived constructor called\n"}, {"num": 86, "title": "Demonstrate constructor in a derived class calling base class constructor", "code": "#include <iostream>\nusing namespace std;\nclass Base {\npublic:\n    Base(int x) { cout << \"Base constructor called with x = \" << x << endl; }\n};\nclass Derived : public Base {\npublic:\n    Derived(int x, int y) : Base(x) { cout << \"Derived constructor called with y = \" << y << endl; }\n};\nint main() {\n    Derived d(5, 10);\n    return 0;\n}", "output": "Base constructor called with x = 5\nDerived constructor called with y = 10\n"}, {"num": 87, "title": "Demonstrate single inheritance with public access specifier", "code": "#include <iostream>\nusing namespace std;\nclass Base {\npublic:\n    int a = 10;\nprotected:\n    int b = 20;\nprivate:\n    int c = 30;\n};\nclass Derived : public Base {\npublic:\n    void show() {\n        cout << \"a (public) = \" << a << endl;\n        cout << \"b (protected) = \" << b << endl;\n    }\n};\nint main() {\n    Derived d;\n    d.show();\n    cout << \"a accessible directly = \" << d.a << endl;\n    return 0;\n}", "output": "a (public) = 10\nb (protected) = 20\na accessible directly = 10\n"}, {"num": 88, "title": "Use private inheritance and show what gets inherited", "code": "#include <iostream>\nusing namespace std;\nclass Base {\npublic:\n    int a = 10;\nprotected:\n    int b = 20;\n};\nclass Derived : private Base {\npublic:\n    void show() {\n        cout << \"a = \" << a << \", b = \" << b << \" (accessible inside class)\" << endl;\n    }\n};\nint main() {\n    Derived d;\n    d.show();\n    // d.a would be an error here since inheritance is private\n    return 0;\n}", "output": "a = 10, b = 20 (accessible inside class)\n"}, {"num": 89, "title": "Demonstrate multilevel inheritance", "code": "#include <iostream>\nusing namespace std;\nclass GrandParent {\npublic:\n    void show1() { cout << \"GrandParent class\" << endl; }\n};\nclass Parent : public GrandParent {\npublic:\n    void show2() { cout << \"Parent class\" << endl; }\n};\nclass Child : public Parent {\npublic:\n    void show3() { cout << \"Child class\" << endl; }\n};\nint main() {\n    Child c;\n    c.show1();\n    c.show2();\n    c.show3();\n    return 0;\n}", "output": "GrandParent class\nParent class\nChild class\n"}, {"num": 90, "title": "Implement multiple inheritance and resolve name conflicts", "code": "#include <iostream>\nusing namespace std;\nclass A {\npublic:\n    void display() { cout << \"Display from class A\" << endl; }\n};\nclass B {\npublic:\n    void display() { cout << \"Display from class B\" << endl; }\n};\nclass C : public A, public B {\npublic:\n    void show() {\n        A::display();\n        B::display();\n    }\n};\nint main() {\n    C obj;\n    obj.show();\n    return 0;\n}", "output": "Display from class A\nDisplay from class B\n"}, {"num": 91, "title": "Show constructor call sequence in multiple inheritance", "code": "#include <iostream>\nusing namespace std;\nclass A {\npublic:\n    A() { cout << \"Constructor of A\" << endl; }\n};\nclass B {\npublic:\n    B() { cout << \"Constructor of B\" << endl; }\n};\nclass C : public A, public B {\npublic:\n    C() { cout << \"Constructor of C\" << endl; }\n};\nint main() {\n    C obj;\n    return 0;\n}", "output": "Constructor of A\nConstructor of B\nConstructor of C\n"}, {"num": 92, "title": "Use virtual base classes to solve diamond problem", "code": "#include <iostream>\nusing namespace std;\nclass Animal {\npublic:\n    void eat() { cout << \"Animal eats\" << endl; }\n};\nclass Horse : virtual public Animal {};\nclass Donkey : virtual public Animal {};\nclass Mule : public Horse, public Donkey {};\nint main() {\n    Mule m;\n    m.eat();\n    return 0;\n}", "output": "Animal eats\n"}, {"num": 93, "title": "Override a function in derived class and call base class version", "code": "#include <iostream>\nusing namespace std;\nclass Shape {\npublic:\n    virtual void draw() { cout << \"Drawing generic shape\" << endl; }\n};\nclass Square : public Shape {\npublic:\n    void draw() override {\n        Shape::draw();\n        cout << \"Drawing square\" << endl;\n    }\n};\nint main() {\n    Square sq;\n    sq.draw();\n    return 0;\n}", "output": "Drawing generic shape\nDrawing square\n"}, {"num": 94, "title": "Demonstrate protected inheritance", "code": "#include <iostream>\nusing namespace std;\nclass Base {\npublic:\n    int a = 5;\n};\nclass Derived : protected Base {\npublic:\n    void show() { cout << \"a via protected inheritance = \" << a << endl; }\n};\nint main() {\n    Derived d;\n    d.show();\n    // d.a is not accessible here since it becomes protected\n    return 0;\n}", "output": "a via protected inheritance = 5\n"}, {"num": 95, "title": "Use std::list to perform insertions and deletions at both ends", "code": "#include <iostream>\n#include <list>\nusing namespace std;\nint main() {\n    list<int> l = {2, 3, 4};\n    l.push_front(1);\n    l.push_back(5);\n    l.pop_front();\n    cout << \"List elements: \";\n    for (int x : l) cout << x << \" \";\n    cout << endl;\n    return 0;\n}", "output": "List elements: 2 3 4 5 \n"}, {"num": 96, "title": "Demonstrate the use of std::deque", "code": "#include <iostream>\n#include <deque>\nusing namespace std;\nint main() {\n    deque<int> dq;\n    dq.push_back(10);\n    dq.push_back(20);\n    dq.push_front(5);\n    dq.pop_back();\n    cout << \"Deque elements: \";\n    for (int x : dq) cout << x << \" \";\n    cout << endl;\n    return 0;\n}", "output": "Deque elements: 5 10 \n"}, {"num": 97, "title": "Iterate over a std::map using iterator and range-based for loop", "code": "#include <iostream>\n#include <map>\nusing namespace std;\nint main() {\n    map<string, int> marks = {{\"Amit\", 85}, {\"Neha\", 92}, {\"Ravi\", 78}};\n    cout << \"Using iterator:\" << endl;\n    for (auto it = marks.begin(); it != marks.end(); ++it)\n        cout << it->first << \" -> \" << it->second << endl;\n    cout << \"Using range-based for loop:\" << endl;\n    for (auto& p : marks)\n        cout << p.first << \" -> \" << p.second << endl;\n    return 0;\n}", "output": "Using iterator:\nAmit -> 85\nNeha -> 92\nRavi -> 78\nUsing range-based for loop:\nAmit -> 85\nNeha -> 92\nRavi -> 78\n"}, {"num": 98, "title": "Demonstrate a std::set with custom comparator", "code": "#include <iostream>\n#include <set>\nusing namespace std;\nstruct Descending { bool operator()(int a, int b) const { return a > b; } };\nint main() {\n    set<int, Descending> s = {5, 1, 8, 3, 9};\n    cout << \"Set in descending order: \";\n    for (int x : s) cout << x << \" \";\n    cout << endl;\n    return 0;\n}", "output": "Set in descending order: 9 8 5 3 1 \n"}, {"num": 99, "title": "Use std::pair and std::tuple for returning multiple values", "code": "#include <iostream>\n#include <tuple>\nusing namespace std;\npair<int, int> minMax(int a, int b) {\n    return make_pair(min(a, b), max(a, b));\n}\ntuple<int, string, double> getStudent() {\n    return make_tuple(1, \"Priya\", 89.5);\n}\nint main() {\n    pair<int, int> p = minMax(45, 20);\n    cout << \"Min = \" << p.first << \", Max = \" << p.second << endl;\n    auto [id, name, marks] = getStudent();\n    cout << \"ID: \" << id << \", Name: \" << name << \", Marks: \" << marks << endl;\n    return 0;\n}", "output": "Min = 20, Max = 45\nID: 1, Name: Priya, Marks: 89.5\n"}, {"num": 100, "title": "Remove duplicates from a vector using std::sort and std::unique", "code": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main() {\n    vector<int> v = {4, 2, 4, 5, 2, 8, 5, 1};\n    sort(v.begin(), v.end());\n    v.erase(unique(v.begin(), v.end()), v.end());\n    cout << \"Vector after removing duplicates: \";\n    for (int x : v) cout << x << \" \";\n    cout << endl;\n    return 0;\n}", "output": "Vector after removing duplicates: 1 2 4 5 8 \n"}]</script>
+<script>
+const data = JSON.parse(document.getElementById('prog-data').textContent);
+
+const units = [
+  {from:1, to:20, label:"Fundamentals, Control Flow &amp; Loops"},
+  {from:21, to:30, label:"Arrays &amp; Strings"},
+  {from:31, to:39, label:"Recursion"},
+  {from:40, to:48, label:"Pointers"},
+  {from:49, to:68, label:"Classes, Objects, Inheritance, Polymorphism &amp; Templates"},
+  {from:69, to:78, label:"File Handling"},
+  {from:79, to:94, label:"Constructors, Inheritance Deep-Dive"},
+  {from:95, to:100, label:"STL (list, deque, map, set, pair/tuple, vector)"},
+];
+
+function unitLabelFor(num){
+  for(const u of units){ if(num>=u.from && num<=u.to) return u.label; }
+  return "";
+}
+
+function escapeHtml(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+const KEYWORDS = new Set(["int","double","float","char","bool","void","long","short","unsigned","signed",
+  "if","else","for","while","do","switch","case","default","break","continue","return","class",
+  "public","private","protected","struct","this","new","delete","virtual","override","static",
+  "const","namespace","using","try","catch","throw","template","typename","friend","operator",
+  "true","false","nullptr","enum","sizeof","explicit","noexcept","auto"]);
+const TYPES = new Set(["string","vector","map","set","list","deque","pair","tuple","ostream","istream",
+  "ifstream","ofstream","fstream","stringstream"]);
+
+// Single-pass tokenizer: scans the RAW (unescaped) source once and classifies
+// each token before any HTML is produced, so previously-inserted tags can
+// never be re-matched by a later rule (which was the cause of corrupted
+// output like "class=pre" leaking into the code view).
+const TOKEN_RE = /(#\s*include\s*[<"][^\n>"]*[>"])|("(?:[^"\\]|\\.)*")|('(?:[^'\\]|\\.)*')|(\/\/[^\n]*)|(\b\d+\.?\d*\b)|(\b[A-Za-z_]\w*\b)/g;
+
+function highlight(code){
+  let out = "";
+  let lastIndex = 0;
+  let m;
+  TOKEN_RE.lastIndex = 0;
+  while ((m = TOKEN_RE.exec(code)) !== null) {
+    out += escapeHtml(code.slice(lastIndex, m.index));
+    const [full, pre, dq, sq, comment, numLit, word] = m;
+    if (pre) {
+      out += `<span class="pre">${escapeHtml(pre)}</span>`;
+    } else if (dq || sq) {
+      out += `<span class="str">${escapeHtml(dq || sq)}</span>`;
+    } else if (comment) {
+      out += `<span class="com">${escapeHtml(comment)}</span>`;
+    } else if (numLit) {
+      out += `<span class="num-lit">${escapeHtml(numLit)}</span>`;
+    } else if (word) {
+      if (KEYWORDS.has(word)) out += `<span class="kw">${word}</span>`;
+      else if (TYPES.has(word)) out += `<span class="type">${word}</span>`;
+      else if (code[TOKEN_RE.lastIndex] === '(' || code.slice(TOKEN_RE.lastIndex).match(/^\s*\(/)) out += `<span class="fn">${word}</span>`;
+      else out += escapeHtml(word);
+    }
+    lastIndex = TOKEN_RE.lastIndex;
+  }
+  out += escapeHtml(code.slice(lastIndex));
+  return out;
+}
+
+function toggleTheme(){
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if (isLight) {
+    document.documentElement.removeAttribute('data-theme');
+    document.getElementById('themeIcon').innerHTML = '&#9789;';
+    document.getElementById('themeLabel').textContent = 'Dark';
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.getElementById('themeIcon').innerHTML = '&#9788;';
+    document.getElementById('themeLabel').textContent = 'Light';
+  }
+}
+
+function copyCode(idx, btn){
+  const codeText = data[idx].code;
+  navigator.clipboard.writeText(codeText).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1200);
+  }).catch(() => {
+    btn.textContent = 'Failed';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1200);
+  });
+}
+
+const listEl = document.getElementById('list');
+let lastUnit = null;
+data.forEach(item => {
+  const ul = unitLabelFor(item.num);
+  if(ul !== lastUnit){
+    const h = document.createElement('div');
+    h.className = 'unit-label';
+    h.textContent = ul;
+    h.dataset.searchable = "unit";
+    listEl.appendChild(h);
+    lastUnit = ul;
+  }
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'p' + item.num;
+  card.dataset.title = (item.num + ' ' + item.title).toLowerCase();
+
+  const isErr = /COMPILE ERROR|RUNTIME ERROR/.test(item.output);
+
+  const idx = item.num - 1;
+  card.innerHTML = `
+    <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+      <div class="num">${String(item.num).padStart(3,'0')}</div>
+      <div class="card-title">${escapeHtml(item.title)}</div>
+      <div class="chev">&#9656;</div>
+    </div>
+    <div class="card-body">
+      <div class="split">
+        <div class="pane code-pane">
+          <div class="pane-head">
+            <div class="pane-label" style="padding:0;">// source · C++17</div>
+            <button class="copy-btn" onclick="event.stopPropagation(); copyCode(${idx}, this)">Copy</button>
+          </div>
+          <pre class="code">${highlight(item.code)}</pre>
+        </div>
+        <div class="pane output">
+          <div class="pane-head">
+            <div class="term-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+            <div class="pane-label" style="padding:0;">$ console output</div>
+          </div>
+          <pre class="term${isErr ? ' err' : ''}">${escapeHtml(item.output || '(no output)')}</pre>
+        </div>
+      </div>
+    </div>
+  `;
+  listEl.appendChild(card);
+});
+
+// Jump buttons per unit
+const jumpRow = document.getElementById('jumpRow');
+units.forEach(u => {
+  const b = document.createElement('button');
+  b.textContent = `${u.from}–${u.to}`;
+  b.onclick = () => {
+    document.getElementById('p'+u.from).scrollIntoView({behavior:'smooth', block:'start'});
+    document.getElementById('p'+u.from).classList.add('open');
+  };
+  jumpRow.appendChild(b);
+});
+
+// Search filter
+const search = document.getElementById('search');
+const countPill = document.getElementById('countPill');
+search.addEventListener('input', () => {
+  const q = search.value.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.card').forEach(card => {
+    const match = !q || card.dataset.title.includes(q);
+    card.classList.toggle('hidden', !match);
+    if(match) visible++;
+    if(match && q) card.classList.add('open');
+  });
+  document.querySelectorAll('.unit-label').forEach(u => u.classList.toggle('hidden', !!q));
+  countPill.textContent = `${visible} / 100`;
+});
+</script>
+</body>
+</html>
